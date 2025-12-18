@@ -79,6 +79,6 @@ document.getElementById("search-btn").addEventListener("click", () => {
     document.getElementById("main-content").style.display = "flex";
     document.getElementById("map-title").textContent = `${town} Recycling Centers`;
 
-    // For now, only New London centers are displayed. Later you could filter or fetch dynamically.
+  //What it will look like in the future with APIs searching for seperate cities. 
     initMap();
 });
