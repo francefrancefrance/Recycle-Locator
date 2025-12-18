@@ -1,4 +1,4 @@
-const recyclingCenters = [
+let recyclingCenters = [ 
     {
         name: "New London Transfer Station",
         address: "80 Shaw St, New London, CT",
@@ -25,7 +25,6 @@ const recyclingCenters = [
 let map;
 
 function initMap() {
-    // Initialize map centered in New London, CT
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 41.3550, lng: -72.0995 },
         zoom: 14
@@ -33,15 +32,16 @@ function initMap() {
 
     const infoWindow = new google.maps.InfoWindow();
 
-    recyclingCenters.forEach((center) => {
-        // Create marker
+    const locationList = document.getElementById("location-list");
+    locationList.innerHTML = "";
+
+    recyclingCenters.forEach(center => {
         const marker = new google.maps.Marker({
             position: { lat: center.lat, lng: center.lng },
             map: map,
             title: center.name
         });
 
-        // Add info window on marker click
         marker.addListener("click", () => {
             infoWindow.setContent(`
                 <h3>${center.name}</h3>
@@ -51,8 +51,6 @@ function initMap() {
             infoWindow.open(map, marker);
         });
 
-        // Add to location list
-        const locationList = document.getElementById("location-list");
         const li = document.createElement("li");
         li.innerHTML = `<strong>${center.name}</strong><br>${center.address}<br><em>${center.materials}</em>`;
         li.addEventListener("click", () => {
@@ -69,5 +67,18 @@ function initMap() {
     });
 }
 
-// Initialize map after window loads
-window.onload = initMap;
+// Handle town search
+document.getElementById("search-btn").addEventListener("click", () => {
+    const town = document.getElementById("town-input").value.trim();
+    if (town === "") {
+        alert("Please enter a town.");
+        return;
+    }
+
+    document.getElementById("landing-screen").style.display = "none";
+    document.getElementById("main-content").style.display = "flex";
+    document.getElementById("map-title").textContent = `${town} Recycling Centers`;
+
+    // For now, only New London centers are displayed. Later you could filter or fetch dynamically.
+    initMap();
+});
