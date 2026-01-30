@@ -1,4 +1,4 @@
-let recyclingCenters = [ 
+let recyclingCenters = [
     {
         name: "New London Transfer Station",
         address: "80 Shaw St, New London, CT",
@@ -23,53 +23,65 @@ let recyclingCenters = [
 ];
 
 let map;
+let markers = [];
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 41.3550, lng: -72.0995 },
-        zoom: 14
-    });
+    map = L.map('map').setView([41.3520, -72.0995], 14);
 
-    const infoWindow = new google.maps.InfoWindow();
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    markers.forEach(marker => map.removeLayer(marker));
+    markers = [];
 
     const locationList = document.getElementById("location-list");
     locationList.innerHTML = "";
 
-    recyclingCenters.forEach(center => {
-        const marker = new google.maps.Marker({
-            position: { lat: center.lat, lng: center.lng },
-            map: map,
-            title: center.name
-        });
+    recyclingCenters.forEach((center) => {
+        const popupContent = `
+            <h3>${center.name}</h3>
+            <p>${center.address}</p>
+            <p><strong>Materials:</strong> ${center.materials}</p>
+        `;
 
-        marker.addListener("click", () => {
-            infoWindow.setContent(`
-                <h3>${center.name}</h3>
-                <p>${center.address}</p>
-                <p><strong>Materials:</strong> ${center.materials}</p>
-            `);
-            infoWindow.open(map, marker);
-        });
+        const marker = L.marker([center.lat, center.lng])
+            .addTo(map)
+            .bindPopup(popupContent);
+
+        markers.push(marker);
 
         const li = document.createElement("li");
-        li.innerHTML = `<strong>${center.name}</strong><br>${center.address}<br><em>${center.materials}</em>`;
+        li.innerHTML = `
+            <strong>${center.name}</strong>
+            ${center.address}
+            <em>♻️ ${center.materials}</em>
+        `;
+
         li.addEventListener("click", () => {
-            map.setCenter({ lat: center.lat, lng: center.lng });
-            map.setZoom(16);
-            infoWindow.setContent(`
-                <h3>${center.name}</h3>
-                <p>${center.address}</p>
-                <p><strong>Materials:</strong> ${center.materials}</p>
-            `);
-            infoWindow.open(map, marker);
+            map.setView([center.lat, center.lng], 16);
+            marker.openPopup();
+
+            document.querySelectorAll('#location-list li').forEach(item => {
+                item.style.backgroundColor = '';
+                item.style.borderColor = '';
+            });
+            li.style.backgroundColor = '#e0f2ff';
+            li.style.borderColor = 'var(--primary)';
         });
+
         locationList.appendChild(li);
     });
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 100);
 }
 
-// Handle town search
 document.getElementById("search-btn").addEventListener("click", () => {
     const town = document.getElementById("town-input").value.trim();
+
     if (town === "") {
         alert("Please enter a town.");
         return;
@@ -79,6 +91,11 @@ document.getElementById("search-btn").addEventListener("click", () => {
     document.getElementById("main-content").style.display = "flex";
     document.getElementById("map-title").textContent = `${town} Recycling Centers`;
 
-  //What it will look like in the future with APIs searching for seperate cities. 
     initMap();
+});
+
+document.getElementById("town-input").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        document.getElementById("search-btn").click();
+    }
 });
