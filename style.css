@@ -10,7 +10,6 @@
     --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Reset */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -24,7 +23,6 @@ html, body {
     color: var(--text);
 }
 
-/* Landing Screen */
 #landing-screen {
     display: flex;
     flex-direction: column;
@@ -40,6 +38,7 @@ html, body {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
+    color: var(--primary);
 }
 
 #landing-screen p {
@@ -54,7 +53,6 @@ html, body {
     border-radius: var(--radius);
     border: 1px solid var(--border);
     font-size: 1rem;
-    transition: border-color 0.2s;
 }
 
 #landing-screen input:focus {
@@ -72,7 +70,6 @@ html, body {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
 }
 
 #landing-screen button:hover {
@@ -80,30 +77,64 @@ html, body {
     transform: translateY(-1px);
 }
 
-/* Main Layout */
 #main-content {
     display: flex;
-    flex: 1;
-    flex-wrap: wrap;
+    flex-direction: column;
+    height: 100vh;
+    padding: 1rem;
     gap: 1rem;
-    padding: 1.5rem;
 }
 
-/* Header & Footer */
-header, footer {
+header {
     background-color: var(--primary);
     color: #ffffff;
     text-align: center;
     padding: 1rem;
     border-radius: var(--radius);
+    flex-shrink: 0;
 }
 
-/* Map & Locations */
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+#map-container {
+    display: flex;
+    flex: 1;
+    gap: 1rem;
+    min-height: 0;
+}
+
 #map {
     flex: 2;
-    min-height: 500px;
     border-radius: var(--radius);
     box-shadow: var(--shadow);
+    background-color: var(--surface);
+    min-height: 500px;
+    z-index: 1;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: var(--radius);
+    padding: 0;
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    padding: 15px;
+}
+
+.leaflet-popup-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    color: var(--primary);
+}
+
+.leaflet-popup-content p {
+    margin: 0 0 5px 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 #locations {
@@ -111,59 +142,93 @@ header, footer {
     background-color: var(--surface);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 1rem;
-    max-height: 500px;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    min-width: 300px;
 }
 
 #locations h2 {
     font-size: 1.25rem;
     margin-bottom: 1rem;
+    color: var(--text);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
 }
 
-#locations ul {
+#location-list {
     list-style: none;
     overflow-y: auto;
+    flex: 1;
+    padding-right: 0.5rem;
 }
 
-#locations li {
-    padding: 0.75rem;
+#location-list li {
+    padding: 1rem;
     border-radius: var(--radius);
-    border: 1px solid transparent;
+    border: 1px solid var(--border);
     cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
+    background-color: var(--background);
+    margin-bottom: 0.75rem;
 }
 
-#locations li + li {
-    margin-top: 0.5rem;
+#location-list li:hover {
+    background-color: #e0f2ff;
+    border-color: var(--primary);
+    transform: translateX(4px);
 }
 
-#locations li:hover {
-    background-color: #f1f5f9;
-    border-color: var(--border);
-}
-
-#locations li strong {
+#location-list li strong {
     display: block;
     font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+    font-size: 1.05rem;
 }
 
-#locations li em {
+#location-list li em {
     display: block;
     font-style: normal;
     color: var(--muted);
     font-size: 0.9rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
 }
 
-/* Responsive */
+footer {
+    background-color: var(--primary);
+    color: #ffffff;
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
 @media (max-width: 900px) {
-    #main-content {
+    #map-container {
         flex-direction: column;
     }
 
-    #map,
+    #map {
+        min-height: 400px;
+        flex: none;
+    }
+
     #locations {
-        max-height: none;
+        max-height: 400px;
+        min-width: unset;
+    }
+}
+
+@media (max-width: 600px) {
+    #landing-screen h1 {
+        font-size: 2rem;
+    }
+
+    #map {
+        min-height: 300px;
     }
 }
