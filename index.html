@@ -1,39 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recycling Map</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recycling Map</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+crossorigin=""/>
 </head>
+
 <body>
-    <div id="landing-screen">
-        <h1>Find Recycling Centers</h1>
-        <p>Enter your town to see local recycling centers:</p>
-        <input type="text" id="town-input" placeholder="e.g., New London">
-        <button id="search-btn">Search</button>
-    </div>
 
-    <main id="main-content" style="display:none;">
-        <header>
-            <h1 id="map-title">Recycling Centers</h1>
-        </header>
+<div id="auth-screen" class="screen">
+<h1>Recycle Locator</h1>
 
-        <div id="map-container">
-            <div id="map"></div>
-            <div id="locations">
-                <h2>Recycling Locations</h2>
-                <ul id="location-list"></ul>
-            </div>
-        </div>
+<div id="auth-box">
+<h2>Create Account</h2>
+<input type="text" id="signup-username" placeholder="Username">
+<input type="password" id="signup-password" placeholder="Password">
+<button id="signup-btn">Sign Up</button>
 
-        <footer>
-            <p>2025 Recycling Map</p>
-        </footer>
-    </main>
+<h2>Login</h2>
+<input type="text" id="login-username" placeholder="Username">
+<input type="password" id="login-password" placeholder="Password">
+<button id="login-btn">Login</button>
+</div>
+</div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="script.js"></script>
+<div id="town-screen" class="screen" style="display:none;">
+<button id="back-to-auth">Back</button>
+<h1>Find Recycling Centers</h1>
+<p id="user-display"></p>
+<input type="text" id="town-input" placeholder="Enter a Connecticut town">
+<button id="search-btn">Search</button>
+</div>
+
+<main id="main-content" style="display:none;">
+<header>
+<button id="back-to-town">Back</button>
+<h1 id="map-title">Recycling Centers</h1>
+</header>
+
+<div id="map-container">
+<div id="map"></div>
+
+<div id="locations">
+<h2>Recycling Locations</h2>
+<ul id="location-list"></ul>
+</div>
+</div>
+
+<footer>
+<p>2025 Recycling Map</p>
+</footer>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+crossorigin=""></script>
+
+<script src="script.js"></script>
+
 </body>
 </html>
