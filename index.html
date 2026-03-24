@@ -1,69 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recycling Map</title>
-
-<link rel="stylesheet" href="style.css">
-
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-crossorigin=""/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recycle Locator | Connecticut</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div id="auth-screen" class="screen">
-<h1>Recycle Locator</h1>
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen active">
+        <div class="auth-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-recycle"></i>
+                </div>
+                <h1>Recycle Locator</h1>
+                <p class="tagline">Find recycling centers across Connecticut</p>
+            </div>
 
-<div id="auth-box">
-<h2>Create Account</h2>
-<input type="text" id="signup-username" placeholder="Username">
-<input type="password" id="signup-password" placeholder="Password">
-<button id="signup-btn">Sign Up</button>
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Sign In</button>
+                <button class="tab-btn" data-tab="signup">Create Account</button>
+            </div>
 
-<h2>Login</h2>
-<input type="text" id="login-username" placeholder="Username">
-<input type="password" id="login-password" placeholder="Password">
-<button id="login-btn">Login</button>
-</div>
-</div>
+            <div class="auth-forms">
+                <!-- Login Form -->
+                <form id="login-form" class="auth-form active">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="login-username" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span>Sign In</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
 
-<div id="town-screen" class="screen" style="display:none;">
-<button id="back-to-auth">Back</button>
-<h1>Find Recycling Centers</h1>
-<p id="user-display"></p>
-<input type="text" id="town-input" placeholder="Enter a Connecticut town">
-<button id="search-btn">Search</button>
-</div>
+                <!-- Signup Form -->
+                <form id="signup-form" class="auth-form">
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signup-username" placeholder="Choose a username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signup-password" placeholder="Create a password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <span>Create Account</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
-<main id="main-content" style="display:none;">
-<header>
-<button id="back-to-town">Back</button>
-<h1 id="map-title">Recycling Centers</h1>
-</header>
+    <!-- Town Selection Screen -->
+    <div id="town-screen" class="screen">
+        <nav class="top-nav">
+            <div class="nav-brand">
+                <i class="fas fa-recycle"></i>
+                <span>Recycle Locator</span>
+            </div>
+            <div class="nav-user">
+                <button id="profile-btn" class="btn-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="user-display"></span>
+                </button>
+                <button id="logout-btn" class="btn-icon" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
 
-<div id="map-container">
-<div id="map"></div>
+        <div class="town-container">
+            <div class="search-card">
+                <h2>Find Recycling Centers</h2>
+                <p>Enter a Connecticut town to locate nearby recycling facilities</p>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="town-input" placeholder="Search towns..." autocomplete="off">
+                    <button id="search-btn" class="btn-primary">Search</button>
+                </div>
 
-<div id="locations">
-<h2>Recycling Locations</h2>
-<ul id="location-list"></ul>
-</div>
-</div>
+                <div id="town-suggestions" class="suggestions-list"></div>
+                
+                <div class="quick-towns">
+                    <span>Popular:</span>
+                    <button class="town-chip" data-town="New London">New London</button>
+                    <button class="town-chip" data-town="Hartford">Hartford</button>
+                    <button class="town-chip" data-town="New Haven">New Haven</button>
+                    <button class="town-chip" data-town="Stamford">Stamford</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<footer>
-<p>2025 Recycling Map</p>
-</footer>
-</main>
+    <!-- Main Map Screen -->
+    <div id="main-content" class="screen">
+        <nav class="top-nav">
+            <button id="back-to-town" class="btn-back">
+                <i class="fas fa-arrow-right"></i>
+                <span>Back to Search</span>
+            </button>
+            <h1 id="map-title">Recycling Centers</h1>
+            <div class="nav-user">
+                <button id="map-profile-btn" class="btn-profile">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="map-user-display"></span>
+                </button>
+            </div>
+        </nav>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-crossorigin=""></script>
+        <div class="map-layout">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Locations</h3>
+                    <span id="result-count">0 found</span>
+                </div>
+                <div id="location-list" class="location-list"></div>
+            </div>
+            
+            <div class="map-container">
+                <div id="map"></div>
+                <div class="map-overlay">
+                    <button id="locate-me" class="btn-floating" title="My location">
+                        <i class="fas fa-crosshairs"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script src="script.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="script.js"></script>
+     <!-- Profile Screen -->
+     <div id="profile-screen" class="screen">
+        <nav class="top-nav">
+            <button id="back-from-profile" class="btn-back">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back</span>
+            </button>
+            <h1>My Profile</h1>
+            <div class="nav-user">
+                <button id="logout-from-profile" class="btn-icon" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
 
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h2 id="profile-username">Username</h2>
+                    <p id="profile-stats">0 saved centers</p>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <div class="saved-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-bookmark"></i> Saved Centers</h3>
+                        <button id="clear-all-saved" class="btn-text">Clear All</button>
+                    </div>
+                    
+                    <div id="saved-list" class="saved-list">
+                        <!-- Saved items will be inserted here -->
+                    </div>
+                    
+                    <div id="no-saved-message" class="empty-state">
+                        <div class="empty-icon">
+                            <i class="far fa-bookmark"></i>
+                        </div>
+                        <h4>No saved centers yet</h4>
+                        <p>Search for recycling centers and save your favorites for quick access</p>
+                        <button class="btn-primary" onclick="showScreen('town-screen')">
+                            Find Centers
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button id="delete-account" class="btn-danger">
+                        <i class="fas fa-trash-alt"></i>
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
